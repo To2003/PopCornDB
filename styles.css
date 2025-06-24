@@ -89,9 +89,9 @@ body {
 
 .hero {
   height: 70vh;
-  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)), url("/placeholder.svg?height=600&width=1400");
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)), url("../PopCorn DB/img/padrino.jpg");
   background-size: cover;
-  background-position: center;
+  background-position: top;
   display: flex;
   align-items: center;
   position: relative;
@@ -102,6 +102,7 @@ body {
   max-width: 500px;
   padding: 0 4rem;
   z-index: 2;
+
 }
 
 .hero-title {
