@@ -184,7 +184,7 @@ async function openMovieModal(movieId) {
   document.getElementById("modalTitle").textContent = movie.title;
   document.getElementById("modalYear").textContent = movie.release_date?.slice(0, 4) || "N/A";
   document.getElementById("modalGenre").textContent = movie.genres.map(g => g.name).join(", ");
-  document.getElementById("modalRating").textContent = `⭐ ${movie.vote_average?.toFixed(1) || "N/A"}`;
+  document.getElementById("modalRating").textContent = `🍿 ${movie.vote_average?.toFixed(1) || "N/A"}`;
   document.getElementById("modalDescription").textContent = movie.overview || "Sin descripción";
   document.getElementById("modalDirector").textContent = credits.director;
   document.getElementById("modalCast").textContent = credits.cast;
