@@ -1,9 +1,8 @@
-// --- CONFIGURACIÓN ---
 const apiKey = 'd4e5e3959720612e68014b13504975d2';
 const baseUrl = 'https://api.themoviedb.org/3';
 const imageBaseUrl = 'https://image.tmdb.org/t/p/w500';
 
-// 🎬 Categorías tipo Netflix
+// Categorías estilo Netflix
 const genreIds = {
   "Acción": 28,
   "Aventura": 12,
@@ -27,22 +26,20 @@ const genreIds = {
 
 const carousels = {};
 let isSearching = false;
-let autoScrollInterval = null;
 
-// --- ELEMENTOS DEL DOM ---
+// DOM
 const categoriesContainer = document.getElementById("categoriesContainer");
 const searchInput = document.getElementById("searchInput");
 const modal = document.getElementById("movieModal");
 const closeModal = document.getElementById("closeModal");
 
-// --- INICIO ---
+// Carga inicial
 document.addEventListener("DOMContentLoaded", () => {
   createCarousels();
   setupEventListeners();
-  startAutoScroll();
 });
 
-// --- EVENTOS ---
+// Eventos
 function setupEventListeners() {
   searchInput.addEventListener("input", handleSearch);
   closeModal.addEventListener("click", closeMovieModal);
@@ -54,20 +51,20 @@ function setupEventListeners() {
   });
 }
 
-// --- CARGAR HASTA 120 PELÍCULAS POR GÉNERO ---
+// Películas por género (hasta 120)
 async function fetchMoviesByGenre(genreId, pages = 6) {
-  const allMovies = [];
+  const movies = [];
 
   for (let page = 1; page <= pages; page++) {
     const res = await fetch(`${baseUrl}/discover/movie?api_key=${apiKey}&language=es-ES&sort_by=popularity.desc&with_genres=${genreId}&page=${page}`);
     const data = await res.json();
-    allMovies.push(...data.results);
+    movies.push(...data.results);
   }
 
-  return allMovies.slice(0, 120);
+  return movies.slice(0, 120);
 }
 
-// --- CREAR CARRUSELES ---
+// Crear carruseles
 async function createCarousels() {
   categoriesContainer.innerHTML = "";
 
@@ -79,7 +76,7 @@ async function createCarousels() {
   setupCarouselButtons();
 }
 
-// --- CREAR CATEGORÍA ---
+// Renderizar sección por categoría
 function renderCategory(category, movies) {
   const categoryId = category.replace(/\s+/g, "-").toLowerCase();
 
@@ -96,25 +93,25 @@ function renderCategory(category, movies) {
   categoriesContainer.appendChild(section);
 
   const wrapper = section.querySelector(".carousel-wrapper");
-  wrapper.innerHTML = movies.map(movie => createMovieCard(movie)).join("");
+  wrapper.innerHTML = movies.map(createMovieCard).join("");
 
   carousels[category] = {
     currentIndex: 0,
     wrapper,
-    totalOriginal: movies.length,
+    total: movies.length,
   };
 }
 
-// --- TARJETA DE PELÍCULA ---
+// Crear card HTML
 function createMovieCard(movie) {
   const poster = movie.poster_path ? `${imageBaseUrl}${movie.poster_path}` : '/placeholder.svg';
   const title = movie.title || "Sin título";
-  const year = movie.release_date ? movie.release_date.slice(0, 4) : "Desconocido";
+  const year = movie.release_date?.slice(0, 4) || "N/A";
   const rating = movie.vote_average?.toFixed(1) || "N/A";
 
   return `
     <div class="movie-card" data-movie-id="${movie.id}">
-      <img src="${poster}" alt="${title}" class="movie-poster">
+      <img src="${poster}" alt="${title}" class="movie-poster" />
       <div class="movie-rating">${rating}</div>
       <div class="movie-info">
         <h3 class="movie-title">${title}</h3>
@@ -124,53 +121,87 @@ function createMovieCard(movie) {
   `;
 }
 
-// --- MOVER CARRUSEL INFINITO ---
+// Mover carrusel
 function moveCarousel(category, direction) {
   const carousel = carousels[category];
   if (!carousel || !carousel.wrapper) return;
 
   const wrapper = carousel.wrapper;
-  const cardWidth = 210;
+  const card = wrapper.querySelector(".movie-card");
+  const cardWidth = card.offsetWidth + 10; // 10px es el gap
   const containerWidth = wrapper.parentElement.offsetWidth;
   const visibleCards = Math.floor(containerWidth / cardWidth);
-  const totalCards = carousel.totalOriginal;
+  const maxIndex = carousel.total - visibleCards;
 
-  carousel.currentIndex += direction * visibleCards;
+  carousel.currentIndex += direction;
 
-  // Reiniciar al final/inicio
-  if (carousel.currentIndex >= totalCards - visibleCards) {
+  if (carousel.currentIndex > maxIndex) {
     carousel.currentIndex = 0;
   } else if (carousel.currentIndex < 0) {
-    carousel.currentIndex = totalCards - visibleCards;
+    carousel.currentIndex = maxIndex;
   }
 
   const translateX = -carousel.currentIndex * cardWidth;
   wrapper.style.transform = `translateX(${translateX}px)`;
 }
 
-// --- BOTONES CARRUSEL ---
+
+// Botones carrusel
 function setupCarouselButtons() {
-  const navButtons = document.querySelectorAll(".carousel-nav");
-  navButtons.forEach((button) => {
-    button.addEventListener("click", () => {
-      const category = button.getAttribute("data-category");
-      const direction = parseInt(button.getAttribute("data-direction"));
-      moveCarousel(category, direction);
+  document.querySelectorAll(".carousel-nav").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const category = btn.getAttribute("data-category");
+      const dir = parseInt(btn.getAttribute("data-direction"));
+      moveCarousel(category, dir);
     });
   });
 }
 
-// --- MODAL ---
+// Buscar
+function handleSearch(e) {
+  const term = e.target.value.toLowerCase().trim();
+
+  if (term === "") {
+    isSearching = false;
+    createCarousels();
+    return;
+  }
+
+  isSearching = true;
+  searchMovies(term);
+}
+
+async function searchMovies(query) {
+  const res = await fetch(`${baseUrl}/search/movie?api_key=${apiKey}&language=es-ES&query=${encodeURIComponent(query)}`);
+  const data = await res.json();
+  showSearchResults(data.results, query);
+}
+
+function showSearchResults(movies, query) {
+  categoriesContainer.innerHTML = `
+    <div class="search-results">
+      <h2 class="category-title">Resultados para "${query}" (${movies.length})</h2>
+      <div class="movies-grid">
+        ${
+          movies.length > 0
+            ? movies.map(createMovieCard).join("")
+            : '<p style="color: #999; text-align: center; grid-column: 1 / -1;">No se encontraron películas</p>'
+        }
+      </div>
+    </div>
+  `;
+}
+
+// Modal
 async function fetchCredits(movieId) {
   const res = await fetch(`${baseUrl}/movie/${movieId}/credits?api_key=${apiKey}&language=es-ES`);
   const data = await res.json();
-
-  const director = data.crew.find(person => person.job === "Director");
-  const topCast = data.cast.slice(0, 3).map(actor => actor.name).join(", ");
+  const director = data.crew.find((p) => p.job === "Director");
+  const cast = data.cast.slice(0, 3).map(a => a.name).join(", ");
 
   return {
     director: director?.name || "No disponible",
-    cast: topCast || "No disponible"
+    cast: cast || "No disponible"
   };
 }
 
@@ -180,12 +211,11 @@ async function openMovieModal(movieId) {
   const credits = await fetchCredits(movieId);
 
   document.getElementById("modalPoster").src = movie.poster_path ? `${imageBaseUrl}${movie.poster_path}` : '/placeholder.svg';
-  document.getElementById("modalPoster").alt = movie.title;
   document.getElementById("modalTitle").textContent = movie.title;
   document.getElementById("modalYear").textContent = movie.release_date?.slice(0, 4) || "N/A";
   document.getElementById("modalGenre").textContent = movie.genres.map(g => g.name).join(", ");
   document.getElementById("modalRating").textContent = `🍿 ${movie.vote_average?.toFixed(1) || "N/A"}`;
-  document.getElementById("modalDescription").textContent = movie.overview || "Sin descripción";
+  document.getElementById("modalDescription").textContent = movie.overview || "Sin descripción disponible.";
   document.getElementById("modalDirector").textContent = credits.director;
   document.getElementById("modalCast").textContent = credits.cast;
   document.getElementById("modalDuration").textContent = movie.runtime ? `${movie.runtime} min` : "Duración desconocida";
@@ -199,59 +229,7 @@ function closeMovieModal() {
   document.body.style.overflow = "auto";
 }
 
-// --- AUTO SCROLL ---
-function startAutoScroll() {
-  autoScrollInterval = setInterval(() => {
-    if (!isSearching) {
-      Object.keys(carousels).forEach((category) => moveCarousel(category, 1));
-    }
-  }, 5000);
-}
-
-function stopAutoScroll() {
-  if (autoScrollInterval) {
-    clearInterval(autoScrollInterval);
-    autoScrollInterval = null;
-  }
-}
-
-// --- BUSCADOR ---
-function handleSearch(e) {
-  const searchTerm = e.target.value.toLowerCase().trim();
-  if (searchTerm === "") {
-    isSearching = false;
-    createCarousels();
-    startAutoScroll();
-    return;
-  }
-
-  isSearching = true;
-  stopAutoScroll();
-  searchMovies(searchTerm);
-}
-
-async function searchMovies(query) {
-  const res = await fetch(`${baseUrl}/search/movie?api_key=${apiKey}&language=es-ES&query=${encodeURIComponent(query)}`);
-  const data = await res.json();
-  showSearchResults(data.results, query);
-}
-
-function showSearchResults(movies, searchTerm) {
-  categoriesContainer.innerHTML = `
-    <div class="search-results">
-      <h2 class="category-title">Resultados para "${searchTerm}" (${movies.length})</h2>
-      <div class="movies-grid">
-        ${
-          movies.length > 0
-            ? movies.map(createMovieCard).join("")
-            : '<p style="color: #999; text-align: center; grid-column: 1 / -1;">No se encontraron películas</p>'
-        }
-      </div>
-    </div>
-  `;
-}
-
-// --- CLICK GLOBAL PARA MODAL ---
+// Click global para abrir modal
 document.addEventListener("click", (e) => {
   const card = e.target.closest(".movie-card");
   if (card) {

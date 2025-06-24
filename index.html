@@ -1,72 +1,74 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PopCornDB - Catálogo de Películas</title>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PopCornDB - Catálogo de Películas</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="nav">
-                <h1 class="logo">PopCornDB</h1>
-                <div class="search-container">
-                    <input type="text" id="searchInput" placeholder="Buscar películas..." class="search-input">
-                    <button class="search-btn">🔍</button>
-                </div>
-            </div>
+  <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="nav">
+        <h1 class="logo">PopCornDB</h1>
+        <div class="search-container">
+          <input type="text" id="searchInput" placeholder="Buscar películas..." class="search-input" />
+          <button class="search-btn">🔍</button>
         </div>
-    </header>
-
-    <!-- Main Content -->
-    <main class="main">
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="hero-content">
-                <h2 class="hero-title">Película Destacada</h2>
-                <h3 class="featured-title">El Padrino</h3>
-                <p class="hero-description">La historia épica de la familia Corleone y su imperio del crimen organizado</p>
-                <div class="hero-buttons">
-                    <button class="info-btn">ℹ Más información</button>
-                </div>
-            </div>
-            <div class="hero-gradient"></div>
-        </section>
-
-        <!-- Categories -->
-        <div class="container">
-            <div id="categoriesContainer">
-                <!-- Los carruseles se generarán aquí con JavaScript -->
-            </div>
-        </div>
-    </main>
-
-    <!-- Modal -->
-    <div class="modal" id="movieModal">
-        <div class="modal-content">
-            <span class="close-btn" id="closeModal">&times;</span>
-            <div class="modal-body">
-                <img class="modal-poster" id="modalPoster" src="/placeholder.svg" alt="" width="400" height="600">
-                <div class="modal-info">
-                    <h2 class="modal-title" id="modalTitle"></h2>
-                    <div class="modal-meta">
-                        <span class="year" id="modalYear"></span>
-                        <span class="genre" id="modalGenre"></span>
-                        <span class="rating" id="modalRating"></span>
-                    </div>
-                    <p class="modal-description" id="modalDescription"></p>
-                    <div class="modal-details">
-                        <p><strong>Director:</strong> <span id="modalDirector"></span></p>
-                        <p><strong>Reparto:</strong> <span id="modalCast"></span></p>
-                        <p><strong>Duración:</strong> <span id="modalDuration"></span></p>
-                    </div>
-                </div>
-            </div>
-        </div>
+      </div>
     </div>
+  </header>
 
-    <script src="script.js"></script>
+  <!-- Main Content -->
+  <main class="main">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <h2 class="hero-title">Película Destacada</h2>
+        <h3 class="featured-title">El Padrino</h3>
+        <p class="hero-description">
+          La historia épica de la familia Corleone y su imperio del crimen organizado
+        </p>
+        <div class="hero-buttons">
+          <button class="info-btn">ℹ Más información</button>
+        </div>
+      </div>
+      <div class="hero-gradient"></div>
+    </section>
+
+    <!-- Categories -->
+    <div class="container">
+      <div id="categoriesContainer">
+        <!-- Los carruseles se generarán aquí con JavaScript -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal -->
+  <div class="modal" id="movieModal">
+    <div class="modal-content">
+      <span class="close-btn" id="closeModal">&times;</span>
+      <div class="modal-body">
+        <img class="modal-poster" id="modalPoster" src="/placeholder.svg" alt="Poster" />
+        <div class="modal-info">
+          <h2 class="modal-title" id="modalTitle"></h2>
+          <div class="modal-meta">
+            <span class="year" id="modalYear"></span>
+            <span class="genre" id="modalGenre"></span>
+            <span class="rating" id="modalRating"></span>
+          </div>
+          <p class="modal-description" id="modalDescription"></p>
+          <div class="modal-details">
+            <p><strong>Director:</strong> <span id="modalDirector"></span></p>
+            <p><strong>Reparto:</strong> <span id="modalCast"></span></p>
+            <p><strong>Duración:</strong> <span id="modalDuration"></span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
