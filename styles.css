@@ -1,4 +1,6 @@
-/* Base Styles */
+/* ===============================================
+   BASE STYLES
+================================================ */
 body {
   background-color: #141414;
   color: #fff;
@@ -7,7 +9,9 @@ body {
   overflow-x: hidden;
 }
 
-/* Loading Screen */
+/* ===============================================
+   LOADING SCREEN
+================================================ */
 .loading-screen {
   position: fixed;
   top: 0;
@@ -35,7 +39,9 @@ body {
   height: 3rem;
 }
 
-/* Hero Section */
+/* ===============================================
+   HERO SECTION
+================================================ */
 .hero {
   background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7)), url("./img/padrino.jpg");
   background-size: cover;
@@ -60,7 +66,9 @@ body {
   z-index: 2;
 }
 
-/* Movie Cards */
+/* ===============================================
+   MOVIE CARDS
+================================================ */
 .movie-card {
   flex: 0 0 auto;
   width: 150px;
@@ -98,11 +106,13 @@ body {
   opacity: 0.8;
 }
 
-/* Carousel Navigation */
+/* ===============================================
+   CAROUSEL NAVIGATION (Desktop only)
+================================================ */
 .carousel-nav {
   width: 40px;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(255, 255, 255, 0.05);
   border: none;
   color: white;
   font-size: 1.5rem;
@@ -116,7 +126,7 @@ body {
 }
 
 .carousel-nav:hover {
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .carousel-nav.prev {
@@ -127,18 +137,37 @@ body {
   right: 0;
 }
 
+/* ===============================================
+   CAROUSEL WRAPPER (Desktop + Scroll on Mobile)
+================================================ */
 .carousel-wrapper {
   scroll-behavior: smooth;
-  cursor: grab;
   display: flex;
   gap: 8px;
+  cursor: grab;
 }
 
 .carousel-wrapper:active {
   cursor: grabbing;
 }
 
-/* Modal Styles */
+@media (max-width: 1024px) {
+  .carousel-wrapper {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .carousel-wrapper::-webkit-scrollbar {
+    display: none;
+  }
+  .carousel-nav {
+    display: none !important;
+  }
+}
+
+/* ===============================================
+   MODAL STYLES
+================================================ */
 .modal {
   display: none;
   position: fixed;
@@ -172,6 +201,9 @@ body {
   transform: scale(1.2);
 }
 
+/* ===============================================
+   STREAMING PROVIDERS
+================================================ */
 .provider-link {
   transition: transform 0.3s ease;
   display: inline-block;
@@ -191,7 +223,9 @@ body {
   margin-right: 5px;
 }
 
-/* Tooltip custom */
+/* ===============================================
+   TOOLTIP STYLING
+================================================ */
 .tooltip {
   --bs-tooltip-bg: #e50914;
 }
@@ -201,7 +235,9 @@ body {
   padding: 0.3rem 0.6rem;
 }
 
-/* Animations */
+/* ===============================================
+   ANIMATIONS
+================================================ */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }
@@ -212,7 +248,9 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Responsive Adjustments */
+/* ===============================================
+   RESPONSIVE ADJUSTMENTS
+================================================ */
 @media (max-width: 768px) {
   .hero {
     min-height: 60vh;
@@ -246,10 +284,6 @@ body {
     width: 140px;
     height: 210px;
   }
-
-  .carousel-nav {
-    display: none;
-  }
 }
 
 @media (max-width: 576px) {
@@ -257,9 +291,21 @@ body {
     width: 120px;
     height: 180px;
   }
+
+  .search-bar {
+    flex-direction: column;
+    width: 100%;
+    gap: 0.5rem;
+  }
+
+  .search-bar input {
+    width: 100% !important;
+  }
 }
 
-/* Header Search Customization */
+/* ===============================================
+   HEADER SEARCH
+================================================ */
 .search-btn {
   background-color: #e50914;
   color: white;
@@ -274,16 +320,4 @@ body {
 
 .search-btn:hover {
   background-color: #b00610;
-}
-
-@media (max-width: 576px) {
-  .search-bar {
-    flex-direction: column;
-    width: 100%;
-    gap: 0.5rem;
-  }
-
-  .search-bar input {
-    width: 100% !important;
-  }
 }
